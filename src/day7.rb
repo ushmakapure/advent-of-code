@@ -14,8 +14,7 @@ def read_rule(rule)
   bags = bags_inside.split(', ')
         .map { |i| i.gsub('.', '') }
         .map { |i| i.gsub('bags', 'bag') }
-        .map { |i| i.gsub(/[[:digit:]]/, '') }
-        .map { |i| i.strip }
+        .map { |i| [i.match(/[[:digit:]]/).to_s.to_i, i.gsub(/[[:digit:]]/, '').strip] }
 
   key = container.gsub('bags', 'bag')
   # binding.pry
@@ -36,7 +35,7 @@ def traverse(map, start)
     end
   end
 
-  visited.size
+  visited
 end
 
 def run(source_file)
@@ -45,18 +44,16 @@ def run(source_file)
 
   rules.each do |r|
     key, bags = read_rule(r)
-    bags.each do |bag| 
-      if map.key?(bag)
-        vals = map[bag]
-        vals << key
-        map[bag] = vals
-      else
-        map[bag] = [key]
-      end
-    end
+    map[key] = bags
   end
-
-  traverse(map, 'shiny gold bag')
+  count_bags_inside([1, 'shiny gold bag'], map) - 1 
 end
+
+def count_bags_inside(node, graph)
+  contents = graph[node.last]
+  return 0 unless contents
+  return node.first * (contents.sum { |color| count_bags_inside(color, graph) } + 1)
+end
+
 
 puts run('../input/day7.txt')
