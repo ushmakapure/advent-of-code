@@ -11,7 +11,7 @@ end
 
 def do_thing(rule_copy)
   seen = Set.new # ies we've already seen
-  acc = 0 
+  acc = 0
   i = 0
   terminated = true
   while i < rule_copy.length # follow rules and see if it terminates?
@@ -24,16 +24,17 @@ def do_thing(rule_copy)
 
     seen << i
 
-    if rule[0] == 'nop'
+    case rule[0]
+    when 'nop'
       i += 1
-    elsif rule[0] == 'acc'
-      i += 1 
+    when 'acc'
+      i += 1
       acc += rule[1].to_i
-    elsif rule[0] == 'jmp'
-      if rule[1].to_i.zero? 
+    when 'jmp'
+      if rule[1].to_i.zero?
         terminated = false
         break
-      else 
+      else
         i += rule[1].to_i
       end
     end
@@ -42,7 +43,6 @@ def do_thing(rule_copy)
   [terminated, acc]
 end
 
-
 def run(source_file)
   rules = parse(source_file)
 
@@ -50,28 +50,22 @@ def run(source_file)
   while j < rules.length
     candidate = rules[j]
     if candidate[0] == 'acc'
-      j += 1 
-    else 
-      rule_copy = parse(source_file) 
+      j += 1
+    else
+      rule_copy = parse(source_file)
       rule = rules[j]
       if rule.nil?
         puts j
         puts rules.length
       end
 
-      rule[0] = rule[0] == 'nop' ? 'jmp' : 'nop' 
+      rule[0] = rule[0] == 'nop' ? 'jmp' : 'nop'
       rule_copy[j] = rule
 
       terminated, acc = do_thing(rule_copy)
-      if terminated # found a match
-        return acc
-      else 
-        j += 1
-      end
+      return acc if terminated # found a match
     end
   end
-
-  acc
 end
 
 puts run('../input/day8.txt')
