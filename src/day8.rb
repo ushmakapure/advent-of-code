@@ -9,25 +9,65 @@ def parse(source_file)
   File.read(source_file).split("\n").map { |i| i.split(' ') }
 end
 
-def run(source_file)
-  rules = parse(source_file)
-  seen = Set.new # indexes we've already seen
+def do_thing(rule_copy)
+  seen = Set.new # ies we've already seen
   acc = 0 
+  i = 0
+  terminated = true
+  while i < rule_copy.length # follow rules and see if it terminates?
+    rule = rule_copy[i]
+    # puts "seen: #{seen}, index: #{i}, rule: #{rule}"
+    if seen.include?(i)
+      terminated = false
+      break
+    end
 
-  index = 0 
-  while true
-    rule = rules[index]
-    break if seen.include?(index)
-
-    seen << index
+    seen << i
 
     if rule[0] == 'nop'
-      index += 1
+      i += 1
     elsif rule[0] == 'acc'
-      index += 1 
+      i += 1 
       acc += rule[1].to_i
     elsif rule[0] == 'jmp'
-      index += rule[1].to_i
+      if rule[1].to_i.zero? 
+        terminated = false
+        break
+      else 
+        i += rule[1].to_i
+      end
+    end
+  end
+
+  [terminated, acc]
+end
+
+
+def run(source_file)
+  rules = parse(source_file)
+
+  j = 0
+  while j < rules.length
+    candidate = rules[j]
+    if candidate[0] == 'acc'
+      j += 1 
+    else 
+      rule_copy = parse(source_file) 
+      rule = rules[j]
+      if rule.nil?
+        puts j
+        puts rules.length
+      end
+
+      rule[0] = rule[0] == 'nop' ? 'jmp' : 'nop' 
+      rule_copy[j] = rule
+
+      terminated, acc = do_thing(rule_copy)
+      if terminated # found a match
+        return acc
+      else 
+        j += 1
+      end
     end
   end
 
