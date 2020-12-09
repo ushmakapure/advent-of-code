@@ -1,46 +1,28 @@
 # frozen_string_literal: true
 
 require 'pry'
-require 'set'
 
-# Puzzle: https://adventofcode.com/2020/day/8
+# Puzzle: https://adventofcode.com/2020/day/9
 
 def parse(source_file)
-  File.read(source_file).split("\n").map { |i| i.to_i }
+  File.read(source_file).split("\n").map(&:to_i)
 end
 
-def find(i, j, n, nums)
+def find(i, j, sum, nums)
   (i..j).each do |a|
-    (i..j).each do |b| 
-      next if a == b
-      return true if nums[a] + nums[b] == nums[n] 
+    ((a + 1)..j).each do |b|
+      return nums[a..b].min + nums[a..b].max if nums[a..b].sum == sum
     end
   end
-
-  false
 end
 
-def run(source_file)
+def run(source_file, sum, _window_size)
   nums = parse(source_file)
-  window_size = 25
-
-  i = 0
-  j = window_size
-
-  while j < (nums.length - 1)
-    n = j + 1 
-
-    found_pair = find(i, j, n, nums)    
-    if !found_pair
-      # puts n
-      return nums[n]
-    end
-
-    i+=1
-    j+=1 
-  end
-
-  # puts j
+  find(0, nums.length - 1, sum, nums)
 end
 
-puts run('../input/day9.txt')
+sum = 26_134_589
+window_size = 25
+# example_sum = 127
+# example_window_size = 5
+puts run('../input/day9.txt', sum, window_size)
