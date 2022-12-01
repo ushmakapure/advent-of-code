@@ -1,0 +1,27 @@
+
+[1mFrom:[0m /home/ushma/projects/advent-of-code-2020/src/day11.rb:23 Object#run:
+
+    [1;34m13[0m: [32mdef[0m [1;34mrun[0m(source_file)
+    [1;34m14[0m:   og_seats = parse(source_file)
+    [1;34m15[0m:   seats = parse(source_file)
+    [1;34m16[0m:   [1;34m# seats_dup = parse(source_file)[0m
+    [1;34m17[0m:   changed = [1;36mtrue[0m
+    [1;34m18[0m:   count = [1;34m1[0m
+    [1;34m19[0m: 
+    [1;34m20[0m:   [32mwhile[0m changed
+    [1;34m21[0m:     was_changed = [] 
+    [1;34m22[0m:     binding.pry
+ => [1;34m23[0m:     seats_dup = seats.map(&[33m:dup[0m)
+    [1;34m24[0m:     ([1;34m0[0m...seats.length).each [32mdo[0m |row| 
+    [1;34m25[0m:       ([1;34m0[0m...seats[[1;34m1[0m].length).each [32mdo[0m |col|
+    [1;34m26[0m:         was_changed << apply_rules(row, col, seats, seats_dup)
+    [1;34m27[0m:       [32mend[0m
+    [1;34m28[0m:     [32mend[0m
+    [1;34m29[0m:     seats = seats_dup.map(&[33m:dup[0m)
+    [1;34m30[0m:     changed = was_changed.include?([1;36mtrue[0m)
+    [1;34m31[0m:     count+=[1;34m1[0m
+    [1;34m32[0m:   [32mend[0m
+    [1;34m33[0m: 
+    [1;34m34[0m:   binding.pry
+    [1;34m35[0m: [32mend[0m
+
